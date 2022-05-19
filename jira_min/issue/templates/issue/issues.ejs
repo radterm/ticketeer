@@ -1,0 +1,18 @@
+
+<div>
+    <ul>
+    {% for issue in issues %}
+        <li>
+            <div>
+                <div>{{ issue.heading }}</div>
+                <div>{{ issue.epic.name }}</div>
+                <div>
+                    <span>Story Points: </span>
+                    {{ issue.points }}
+                </div>
+                <div>{{ issue.desc }}</div>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+</div>

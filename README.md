@@ -1,5 +1,5 @@
 
-## Desciption
+## Description
 
 A simple issue tracker webapp written in Django, modelled as a no-frills version of Jira.
 Epics are created to track particular features.
