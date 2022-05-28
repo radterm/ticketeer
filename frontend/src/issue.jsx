@@ -1,6 +1,7 @@
 
 
 import {useState, useEffect} from 'react';
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 export default function Issue() {
@@ -23,18 +24,24 @@ export default function Issue() {
       });
   },[]);
 
-  const issueListContent = issues===null ? <div></div> : issues.map(issue =>
-        <div key={issue.id}>
-          id : {issue.id}
-          heading : {issue.heading}
-          desc : {issue.desc}
-          points : {issue.points}
-        </div>
+  let navigate = useNavigate();
+
+  const issueListContent = issues===null ? <div></div> : issues.map(issue =>   
+    <div key={issue.id} className="my-2" onClick={()=>navigate("issues/"+issue.id)}>
+    	<div className="card">
+  			<div className="card-body">
+  				<h6 className="card-title text-truncate">Issue-{issue.id} | {issue.heading}</h6>
+  				<p className="card-text text-truncate text-muted">{issue.desc}</p>
+  				<span class="badge badge-pill badge-dark">Issue Points: {issue.points}</span>
+  			</div>
+  		</div>
+    </div>
   );
 
   return (
     <div>
       {issueListContent}
     </div>
+    
   );
 }

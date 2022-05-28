@@ -4,9 +4,8 @@ import axios from 'axios';
 export default function Epic() {
   // {
   //   "id": -1,
-  //   "heading": "Issue -1",
+  //   "name: "Epic-1",
   //   "desc": "Dummy desc 101",
-  //   "points": 0
   // }
   const [epics, setIssues] = useState(null);
   console.log(epics);

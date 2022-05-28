@@ -1,5 +1,5 @@
 
-// import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
 import React from 'react';
 // import ReactDOM from 'react-dom/client';
@@ -12,12 +12,21 @@ import Epic  from './epic.jsx';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+function AppComponent(element) {
+  const elem = (
+    <div className="container-fluid">
+      {element}
+    </div>
+  );
+  return elem;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="issues" element={<Issue />} />
-        <Route path="epics"  element={<Epic  />} />
+        <Route path="issues" element={AppComponent(<Issue />)} />
+        <Route path="epics"  element={AppComponent(<Epic  />)} />
       </Routes>
     </BrowserRouter>
   );
