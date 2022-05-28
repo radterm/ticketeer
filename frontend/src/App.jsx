@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 // import ReactDOM from 'react-dom/client';
 
-import Issue from './issue.jsx';
+import Issue, {IssueView} from './issue.jsx';
 import Epic  from './epic.jsx';
 
 // import { Provider } from 'react-redux';
@@ -26,6 +26,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="issues" element={AppComponent(<Issue />)} />
+        <Route path="issues/:issueId" element={AppComponent(<IssueView />)} />
         <Route path="epics"  element={AppComponent(<Epic  />)} />
       </Routes>
     </BrowserRouter>
