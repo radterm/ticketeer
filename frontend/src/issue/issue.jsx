@@ -1,8 +1,11 @@
 
-
-import {useState, useEffect} from 'react';
+import {useEffect} from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+
+import {storeIssue, addIssue} from './issueSlice.js';
+import {getIssueById} from './common.js';
 
 
 function IssueCard(props) {
@@ -40,17 +43,22 @@ function IssueCard(props) {
 }
 
 export function IssueView() {
-	const [issue, setIssue] = useState(null);
 	const {issueId} = useParams();
-  console.log(issueId);
+
+  const issue = useSelector((state) => {
+    return getIssueById(state.issues.value, issueId);
+  });
+  const dispatch = useDispatch();
 
   useEffect(()=>{
+    if(issue!==null){
+      return;
+    }
     axios.get('/issue/api/issues/' + issueId,{
       // baseURL: 'http://localhost:8000',
       responseType: 'json'
     }).then((response) => {
-        console.log(response.data);
-        setIssue(response.data);
+        dispatch(addIssue(response.data));
       });
   },[]);
 
@@ -72,16 +80,21 @@ export default function Issue() {
   //   "desc": "Dummy desc 101",
   //   "points": 0
   // }
-  const [issues, setIssues] = useState(null);
+  const issues = useSelector((state) => state.issues.value);
+  const dispatch = useDispatch();
+
   console.log(issues);
 
   useEffect(()=>{
+    if(issues!==null) {
+      return;
+    }
     axios.get('/issue/api/issues',{
       // baseURL: 'http://localhost:8000',
       responseType: 'json'
     }).then((response) => {
         console.log(response.data);
-        setIssues(response.data);
+        dispatch(storeIssue(response.data));
       });
   },[]);
 
