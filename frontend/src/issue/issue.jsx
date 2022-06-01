@@ -4,8 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 
-import {storeIssue, addIssue} from './issueSlice.js';
-import {getIssueById} from './common.js';
+import {storeIssues} from './issueSlice.js';
 
 
 function IssueCard(props) {
@@ -13,7 +12,7 @@ function IssueCard(props) {
 	const issue = props.issue;
 
 	if(props.type === "list")  return (
-		<div key={issue.id} className="my-2" onClick={()=>navigate("./"+issue.id)}>
+		<div className="my-2" onClick={()=>navigate("./"+issue.id)}>
     	<div className="card">
   			<div className="card-body">
   				<h6 className="card-title text-truncate">
@@ -22,20 +21,20 @@ function IssueCard(props) {
   					<span>{issue.heading}</span>
   				</h6>
   				<p className="card-text text-truncate text-muted">{issue.desc}</p>
-  				<span class="badge badge-pill badge-dark">Issue Points: {issue.points}</span>
+  				<span className="badge badge-pill badge-dark">Issue Points: {issue.points}</span>
   			</div>
   		</div>
     </div>
   );
 
 	return (
-		<div key={issue.id} className="my-2">
+		<div className="my-2">
     	<div className="card">
   			<div className="card-body">
   				<h5 className="card-title"> <span>Issue-{issue.id} </span> </h5>
   				<h6 className="card-title"> <span>{issue.heading}</span> </h6>
   				<p className="card-text">{issue.desc}</p>
-  				<span class="badge badge-pill badge-dark">Issue Points: {issue.points}</span>
+  				<span className="badge badge-pill badge-dark">Issue Points: {issue.points}</span>
   			</div>
   		</div>
     </div>
@@ -46,7 +45,10 @@ export function IssueView() {
 	const {issueId} = useParams();
 
   const issue = useSelector((state) => {
-    return getIssueById(state.issues.value, issueId);
+    if(state.issues.value[issueId] === undefined) {
+      return null;
+    }
+    return state.issues.value[issueId];
   });
   const dispatch = useDispatch();
 
@@ -58,7 +60,7 @@ export function IssueView() {
       // baseURL: 'http://localhost:8000',
       responseType: 'json'
     }).then((response) => {
-        dispatch(addIssue(response.data));
+        dispatch(storeIssues([response.data]));
       });
   },[]);
 
@@ -79,28 +81,40 @@ export default function Issue() {
   //   "heading": "Issue -1",
   //   "desc": "Dummy desc 101",
   //   "points": 0
+
   // }
-  const issues = useSelector((state) => state.issues.value);
+  const issues = useSelector((state) => {
+    const entries = [];
+    for (const entry in state.issues.value) {
+      entries.push(state.issues.value[entry]);
+    }
+    return entries;
+  });
   const dispatch = useDispatch();
 
-  console.log(issues);
-
-  useEffect(()=>{
-    if(issues!==null) {
-      return;
+  useEffect(
+    ()=>{
+      if(issues.length === 0) {
+        axios.get('/issue/api/issues',{
+          // baseURL: 'http://localhost:8000',
+          responseType: 'json'
+        }).then((response) => {
+          console.log(response.data);
+          dispatch(storeIssues(response.data));
+        });
+      }   
     }
-    axios.get('/issue/api/issues',{
-      // baseURL: 'http://localhost:8000',
-      responseType: 'json'
-    }).then((response) => {
-        console.log(response.data);
-        dispatch(storeIssue(response.data));
-      });
-  },[]);
+  ,[]);
 
-  const issueListContent = issues===null ? <div></div> : issues.map(
-  	issue =><IssueCard issue={issue} type="list" />
-  );
+  let issueListContent;
+  if(issues === {}) {
+    issueListContent = <div key="-1">Nothing to show</div> ;
+  }
+  else{
+    issueListContent = issues.map(
+    	issue =><IssueCard key={issue.id} issue={issue} type="list" />
+    );
+  }
 
   return (
     <div>
