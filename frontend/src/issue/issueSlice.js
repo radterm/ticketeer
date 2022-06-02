@@ -7,7 +7,9 @@ export const issueSlice = createSlice({
   },
   reducers: {
     storeIssues: (state, action) => {
-      action.payload.forEach(issue => state.value[issue.id.toString()] = issue);
+      action.payload.forEach((issue) => {
+        state.value[issue.id.toString()] = issue;
+      });
       // we would want to implement an LRU cache here eventually
     }
   },
