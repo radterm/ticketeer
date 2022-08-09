@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const epicSlice = createSlice({
   name: 'epic',
   initialState: {
-    value: {},
+    value: {}
   },
   reducers: {
     storeEpics: (state, action) => {

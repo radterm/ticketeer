@@ -5,6 +5,8 @@ import axios from 'axios';
 
 import {storeEpics} from './epicSlice.js';
 
+import Issue from '../issue/issue.jsx';
+
 function EpicCard(props) {
   let navigate = useNavigate();
   const epic = props.epic;
@@ -66,6 +68,13 @@ export function EpicView() {
 
   return (<div>
     <EpicCard epic={epic} type="single" />
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Issues</h5>
+        <hr/>
+        <Issue epic={epic.id}></Issue>
+      </div>
+    </div>
   </div>);
 }
 

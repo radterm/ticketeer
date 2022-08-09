@@ -4,6 +4,7 @@ export const issueSlice = createSlice({
   name: 'issue',
   initialState: {
     value: {},
+    byEpics: {},
   },
   reducers: {
     storeIssues: (state, action) => {
@@ -11,12 +12,15 @@ export const issueSlice = createSlice({
         state.value[issue.id.toString()] = issue;
       });
       // we would want to implement an LRU cache here eventually
+    },
+    storeIssuesByEpic: (state, action) => {
+      state.byEpics[action.payload.epicId] = action.payload.issues;
     }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { storeIssues } = issueSlice.actions; 
+export const { storeIssues , storeIssuesByEpic } = issueSlice.actions; 
 
 export default issueSlice.reducer;
 
