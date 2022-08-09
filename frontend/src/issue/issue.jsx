@@ -32,7 +32,7 @@ function IssueCard(props) {
   				</h6>
   				<p className="card-text text-truncate text-muted">{issue.desc}</p>
   				{pointsWidget}
-          {epicWidget} <br/>
+          {props.epic===undefined? epicWidget : <span/>} <br/>
           {editWidget}
   			</div>
   		</div>
@@ -245,7 +245,7 @@ export default function Issue(props) {
   }
   else{
     issueListContent = issues.map(
-    	issue =><IssueCard key={issue.id} issue={issue} type="list" />
+    	issue =><IssueCard key={issue.id} issue={issue} type="list" epic={props.epic} />
     );
   }
 
