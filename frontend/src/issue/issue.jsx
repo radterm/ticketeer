@@ -11,6 +11,16 @@ function IssueCard(props) {
 	let navigate = useNavigate();
 	const issue = props.issue;
 
+  const pointsWidget = <span className="badge badge-pill badge-dark mr-2">Issue Points: {issue.points}</span> ;
+  const epicWidget = <button type="button" className="btn btn-outline-dark" onClick={(event)=>{
+            navigate("/epics/"+issue.epic);
+            event.stopPropagation();
+          }}>Epic: {issue.epic}</button> ;
+  const editWidget = <button type="button" className="btn btn-light btn-sm" onClick={(event)=>{
+            navigate("/issues/"+issue.id+"/edit");
+            event.stopPropagation();
+          }}>Edit Issue</button>;
+
 	if(props.type === "list")  return (
 		<div className="my-2" onClick={()=>navigate("/issues/"+issue.id)}>
     	<div className="card">
@@ -21,11 +31,9 @@ function IssueCard(props) {
   					<span>{issue.heading}</span>
   				</h6>
   				<p className="card-text text-truncate text-muted">{issue.desc}</p>
-  				<span className="badge badge-pill badge-dark mr-2">Issue Points: {issue.points}</span>
-          <button type="button" className="btn btn-outline-dark" onClick={(event)=>{
-            navigate("/epics/"+issue.epic);
-            event.stopPropagation();
-          }}>Epic: {issue.epic}</button>
+  				{pointsWidget}
+          {epicWidget} <br/>
+          {editWidget}
   			</div>
   		</div>
     </div>
@@ -38,11 +46,9 @@ function IssueCard(props) {
   				<h5 className="card-title"> <span>Issue-{issue.id} </span> </h5>
   				<h6 className="card-title"> <span>{issue.heading}</span> </h6>
   				<p className="card-text">{issue.desc}</p>
-  				<span className="badge badge-pill badge-dark mr-2">Issue Points: {issue.points}</span>
-          <button type="button" className="btn btn-outline-dark" onClick={(event)=>{
-            navigate("/epics/"+issue.epic);
-            event.stopPropagation();
-          }}>Epic: {issue.epic}</button>
+  				{pointsWidget}
+          {epicWidget} <br/>
+          {editWidget}
   			</div>
   		</div>
     </div>
@@ -84,9 +90,25 @@ export function IssueView() {
 }
 
 export function IssueCreateView(){
-  const {epicId} = useParams();
+  const {epicId, issueId} = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const issueParam = useSelector((state) => {
+    return state.issues.value[issueId];
+  });
+
+  useEffect(()=>{
+    if(issueId===undefined){
+      return;
+    }
+    axios.get('/issue/api/issues/' + issueId,{
+      // baseURL: 'http://localhost:8000',
+      responseType: 'json'
+    }).then((response) => {
+        dispatch(storeIssues([response.data]));
+      });
+  },[]);
 
   const [apiState, setApiState] = useState("initial");
   const [issue, setIssue] = useState(-1);
@@ -95,18 +117,17 @@ export function IssueCreateView(){
 
     var formdata = new FormData(event.target);
     console.log("formdata is:", formdata);
-    // this.postData(this.props.tokenUrl, formdata.get("username"), formdata.get("password"))
     setApiState("creating");
-    
 
-    axios.post("/issue/api/issues/" , formdata
-    ).then((response) => {
+    const method = (issueParam===undefined?"post":"patch");
+    const url = (issueParam===undefined?"/issue/api/issues/":"/issue/api/issues/"+issueParam.id+"/");    
+
+    axios({
+      method: method, 
+      url: url , 
+      data: formdata
+    }).then((response) => {
       console.log(response.data);
-      // if (props.epic===undefined) dispatch(storeIssues(response.data));
-      // else dispatch(storeIssuesByEpic({
-      //   issues: response.data,
-      //   epicId: props.epic
-      // }));
       dispatch(storeIssues([response.data]));
       setIssue(response.data.id);
       setApiState("created");
@@ -121,25 +142,52 @@ export function IssueCreateView(){
 
   if(apiState==="created") navigate("/issues/"+ issue);
 
-  const formInputs = (<div>
-    <div className="form-group">
-      <label for="issue-heading">The heading of the issue</label>
-      <input type="text" className="form-control" id="issue-heading" name="heading" placeholder="Heading" />
-    </div>
-    <div className="form-group">
-      <label for="issue-decsription">The description of the issue</label>
-      <textarea className="form-control" id="issue-decsription" name="desc" placeholder="Description" />
-    </div>
-    <div className="form-group">
-      <label for="points">Issue Points</label>
-      <input type="number" className="form-control" id="points" name="points" />
-    </div>
-    <div className="form-group">
-      <label for="epicId">The Id of the Epic</label>
-      <input type="number" className="form-control" id="epicId" name="epic" value={epicId===undefined ? 1 : epicId} />
-    </div>
-    <button type="submit" className="btn btn-primary">Create Issue</button>
-  </div>);
+  var formInputs;
+  if (issueId===undefined) {
+    formInputs = (<div>
+      <div className="form-group">
+        <label for="issue-heading">The heading of the issue</label>
+        <input type="text" className="form-control" id="issue-heading" name="heading" placeholder="Heading" />
+      </div>
+      <div className="form-group">
+        <label for="issue-decsription">The description of the issue</label>
+        <textarea className="form-control" id="issue-decsription" name="desc" placeholder="Description" />
+      </div>
+      <div className="form-group">
+        <label for="points">Issue Points</label>
+        <input type="number" className="form-control" id="points" name="points" />
+      </div>
+      <div className="form-group">
+        <label for="epicId">The Id of the Epic</label>
+        <input type="number" className="form-control" id="epicId" name="epic" defaultValue={epicId===undefined ? 1 : epicId} />
+      </div>
+      <button type="submit" className="btn btn-primary">Create Issue</button>
+    </div>) ;
+  } else if (issueParam===undefined) {
+    return (<div>
+      Loading...
+    </div>);
+  } else {
+    formInputs = (<div>
+      <div className="form-group">
+        <label for="issue-heading">The heading of the issue</label>
+        <input type="text" className="form-control" id="issue-heading" name="heading" defaultValue={issueParam.heading} />
+      </div>
+      <div className="form-group">
+        <label for="issue-decsription">The description of the issue</label>
+        <textarea className="form-control" id="issue-decsription" name="desc" defaultValue={issueParam.desc} />
+      </div>
+      <div className="form-group">
+        <label for="points">Issue Points</label>
+        <input type="number" className="form-control" id="points" name="points" defaultValue={issueParam.points} />
+      </div>
+      <div className="form-group">
+        <label for="epicId">The Id of the Epic</label>
+        <input type="number" className="form-control" id="epicId" name="epic" defaultValue={issueParam.epic} />
+      </div>
+      <button type="submit" className="btn btn-primary">Edit Issue</button>
+    </div>);
+  }
 
   var fieldset;
   if(apiState==="creating") {
