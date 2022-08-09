@@ -20,4 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('epic', include('epic.urls')),
     path('issue', include('issue.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('jwt-auth/', include('cookieapp.urls')), 
 ]

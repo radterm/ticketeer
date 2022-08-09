@@ -6,6 +6,7 @@ import React from 'react';
 
 import Issue, {IssueView, IssueCreateView} from './issue/issue.jsx';
 import Epic, {EpicView, EpicCreateUpdateView}  from './epic/epic.jsx';
+import Login, {Nav} from './Home.jsx';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -15,13 +16,17 @@ function AppComponent(element) {
       {element}
     </div>
   );
-  return elem;
+  return (<div>
+    <Nav></Nav>
+    {elem}
+  </div>);
 }
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="login" element={AppComponent(<Login />)} />
         <Route path="issues" element={AppComponent(<Issue />)} />
         <Route path="issues/addIssue" element={AppComponent(<IssueCreateView />)} />
         <Route path="issues/:issueId/edit" element={AppComponent(<IssueCreateView />)} />

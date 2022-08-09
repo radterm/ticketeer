@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -17,10 +17,11 @@ def issues(request):
 # api views here.
 
 class IssueView(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = IssueSerializer
     queryset = Issue.objects.all()
 
-@api_view()
+@api_view(['GET'])
 def issue_list_by_epic(request, epic):
     """
     List all issues under a certain epic
