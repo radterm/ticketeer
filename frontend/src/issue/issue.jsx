@@ -76,7 +76,7 @@ export function IssueView() {
     }).then((response) => {
         dispatch(storeIssues([response.data]));
       });
-  },[]);
+  },[issueId]);
 
   if(issue===null){
   	return (<div>
@@ -108,7 +108,7 @@ export function IssueCreateView(){
     }).then((response) => {
         dispatch(storeIssues([response.data]));
       });
-  },[]);
+  },[issueId]);
 
   const [apiState, setApiState] = useState("initial");
   const [issue, setIssue] = useState(-1);
@@ -237,7 +237,7 @@ export default function Issue(props) {
         });
       }   
     }
-  ,[]);
+  ,[props.epic]);
 
   let issueListContent;
   if(issues === {}) {

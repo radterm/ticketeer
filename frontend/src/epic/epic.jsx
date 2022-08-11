@@ -63,7 +63,7 @@ export function EpicCreateUpdateView(){
     }).then((response) => {
         dispatch(storeEpics([response.data]));
       });
-  },[]);
+  },[epicId]);
 
   const [apiState, setApiState] = useState("initial");
   const [epic, setEpic] = useState(-1);
@@ -165,7 +165,7 @@ export function EpicView() {
     }).then((response) => {
         dispatch(storeEpics([response.data]));
       });
-  },[]);
+  },[epicId]);
 
   if(epic===null){
     return (<div>

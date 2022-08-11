@@ -1,12 +1,13 @@
 
 import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/js/bootstrap.js';
 
 import React from 'react';
 // import ReactDOM from 'react-dom/client';
 
 import Issue, {IssueView, IssueCreateView} from './issue/issue.jsx';
 import Epic, {EpicView, EpicCreateUpdateView}  from './epic/epic.jsx';
-import Login, {Nav} from './Home.jsx';
+import Login, {TicketeerNav} from './Home.jsx';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -17,7 +18,7 @@ function AppComponent(element) {
     </div>
   );
   return (<div>
-    <Nav></Nav>
+    <TicketeerNav></TicketeerNav>
     {elem}
   </div>);
 }

@@ -5,6 +5,17 @@ import { addUser, removeUser} from './userSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
 
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  NavbarText,
+} from 'reactstrap';
+
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -72,7 +83,7 @@ export default function Login() {
   );
 };
 
-export function Nav() {
+export function TicketeerNav() {
   const [user, unauthenticated] = useSelector((state) => {
     return [state.user.value, state.user.unauthenticated];
   });
@@ -88,47 +99,73 @@ export function Nav() {
     }).then((response) => {
         dispatch(addUser(response.data.username));
     }).catch((e)=>dispatch(removeUser()));
-  },[]);
+  },[user, unauthenticated]);
 
-  const navBrand = <a className="navbar-brand" href="#">Ticketeer</a>;
-  const toggleButton = (
-    <button className="navbar-toggler ml-2" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
-  );
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen(!isOpen);
+
+  const navBrand = <NavbarBrand href="#">Ticketeer</NavbarBrand>;
+  const nameWidget = <NavbarText>{user}</NavbarText>;
+
+  const toggleButton = <NavbarToggler onClick={toggle} />;
+
+  const logout = (e)=>{
+    e.preventDefault();
+    axios.get('/jwt-auth/logout/' ,{
+      // baseURL: 'http://localhost:8000',
+      responseType: 'json'
+    }).then((response) => {
+        dispatch(removeUser());
+    }).catch((e)=>console.log(e));    
+  };
+
   const logOutWidget = (
-    <a className="nav-item nav-link" onClick={(e)=>{
-      e.preventDefault();
-      axios.get('/jwt-auth/logout/' ,{
-        // baseURL: 'http://localhost:8000',
-        responseType: 'json'
-      }).then((response) => {
-          dispatch(removeUser());
-      }).catch((e)=>console.log(e));    
-    }}>LogOut</a>
+    <NavItem>
+      <NavLink href="#" onClick={logout}>
+        Logout
+      </NavLink>
+    </NavItem>
+  );
+
+  const logInWidget = (
+    <NavItem>
+      <NavLink href="/login">
+        Login or SignUp
+      </NavLink>
+    </NavItem>
   );
 
   const collapsible = (
-    <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div className="navbar-nav">
-        <Link className="nav-item nav-link active" to="/">Home <span className="sr-only">(current)</span></Link>
-        <Link className="nav-item nav-link" to="/epics">Epics</Link>
-        <Link className="nav-item nav-link" to="/issues">Issues</Link>
-        {unauthenticated?<Link className="nav-item nav-link" to="/login">Login or SignUp</Link>:logOutWidget}
-      </div>
-    </div>
+    <Collapse isOpen={isOpen} navbar>
+      <Nav className="me-auto" navbar>
+        <NavItem>
+          <NavLink href="/">
+            Home
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/epics">
+            Epics
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/issues">
+            Issues
+          </NavLink>
+        </NavItem>
+        {unauthenticated ? logInWidget : logOutWidget}
+      </Nav>
+    </Collapse>
   );
-  const nameWidget = (
-    <span className="navbar-text ml-auto">
-      {user}
-    </span>
-  );
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      {navBrand}
-      {collapsible}
-      {nameWidget}
-      {toggleButton}
-    </nav>
+    <div>
+      <Navbar color="dark" dark expand="md">
+        {toggleButton}
+        {navBrand}
+        {collapsible}
+        {nameWidget}
+      </Navbar>
+    </div>
   );
 };
