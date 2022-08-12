@@ -16,6 +16,8 @@ import {
   NavbarText,
 } from 'reactstrap';
 
+import TForm from './TForm.jsx';
+
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -56,29 +58,31 @@ export default function Login() {
 
   return (
     <div className="App">
-      <form onSubmit={login}>
-        <div>
-          <label>Username</label>
-          <input
-            type="text"
+      <TForm onSubmit={login}>
+
+        <div className="form-group">
+          <label for="username">Username</label>
+          <input type="text" className="form-control" id="username" name="username" placeholder="username" 
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
             }}
           />
         </div>
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
+
+        <div className="form-group">
+          <label for="password">Username</label>
+          <input type="password" className="form-control" id="password" name="password" placeholder="password" 
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
         </div>
-        <input type="submit" value="Login" />
-      </form>
+
+        <button type="submit" className="btn btn-primary">Login</button>
+
+      </TForm>
     </div>
   );
 };

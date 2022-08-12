@@ -7,6 +7,8 @@ import {storeEpics} from './epicSlice.js';
 
 import Issue from '../issue/issue.jsx';
 
+import TForm from '../TForm.jsx';
+
 function EpicCard(props) {
   let navigate = useNavigate();
   const epic = props.epic;
@@ -136,9 +138,9 @@ export function EpicCreateUpdateView(){
   }
 
   return (<div>
-    <form onSubmit={handleSubmit}>
+    <TForm onSubmit={handleSubmit}>
       {fieldset}
-    </form>
+    </TForm>
     {apiState==="failed" ? "Failed" : ""}
   </div>);
 }

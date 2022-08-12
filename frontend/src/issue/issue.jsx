@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import {storeIssues, storeIssuesByEpic } from './issueSlice.js';
 
+import TForm from '../TForm.jsx';
 
 function IssueCard(props) {
 	let navigate = useNavigate();
@@ -197,9 +198,9 @@ export function IssueCreateView(){
   }
 
   return (<div>
-    <form onSubmit={handleSubmit}>
+    <TForm onSubmit={handleSubmit}>
       {fieldset}
-    </form>
+    </TForm>
     {apiState==="failed" ? "Failed" : ""}
   </div>);
 }
