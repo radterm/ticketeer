@@ -22,6 +22,11 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // 0 -> Nothing
+  // -1 -> show error msg
+  // 1 -> success!
+  const [loginState, setLoginState] = useState(0);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,21 +45,39 @@ export default function Login() {
 
   const login = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post(
-        "/jwt-auth/login/",
-        {
-          username,
-          password,
-        },
-        { withCredentials: true }
-      );
+    axios.post(
+      "/jwt-auth/login/",
+      {
+        username,
+        password,
+      },
+      { withCredentials: true }
+    ).then((res)=>{
       console.log(res.data.message);
       dispatch(addUser(username));
-    } catch (error) {
+      setLoginState(1);
+    }).catch((error)=>{
       console.log(error);
-    }
+      setLoginState(-1);
+    });
   };
+
+  const errorMsg = (
+    <div class="alert alert-danger" role="alert">
+      Login Failed!
+    </div>
+  );
+
+  const successMsg = (
+    <div class="alert alert-success" role="alert">
+      Welcome {username}!
+    </div>
+  );
+
+  var msgWidget = <span/>;
+  if(loginState===-1) msgWidget=errorMsg;
+  else if(loginState===1) msgWidget=successMsg;
+
 
   return (
     <div className="App">
@@ -81,6 +104,7 @@ export default function Login() {
         </div>
 
         <button type="submit" className="btn btn-primary">Login</button>
+        <div className="pt-2">{msgWidget}</div>
 
       </TForm>
     </div>
