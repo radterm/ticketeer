@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 
 export function csrfMiddleware(data, headers) {
 	headers['X-CSRFToken'] = Cookies.get('csrftoken');
+	return data;
 }
 
 export function isCsrfCookiePresent() {

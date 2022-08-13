@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { addUser, removeUser} from './userSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import {
   Collapse,
@@ -36,7 +36,7 @@ export default function Home() {
             Features
           </div>
           <ul className="list-group list-group-flush">
-            <li className="list-group-item">Track ideas and bugs under issues</li>
+            <li className="list-group-item">Track ideas and bugs with issues</li>
             <li className="list-group-item">Estimate efforts for issues</li>
             <li className="list-group-item">Group issues under epics for easier tracking</li>
           </ul>
@@ -54,11 +54,23 @@ export default function Home() {
       </div>
     </div>
   </div>
-}
+};
+
+export function LoginRequired(){
+  const unauthenticated = useSelector((state) => {
+    return state.user.unauthenticated;
+  });
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  if(unauthenticated) navigate('/login', {state: {next: location.pathname}});
+
+  return <span className="LoginRequired" />;
+};
 
 export function Login() {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
 
   // 0 -> Nothing
   // -1 -> show error msg
@@ -66,6 +78,8 @@ export function Login() {
   const [loginState, setLoginState] = useState(0);
 
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if(isCsrfCookiePresent){
@@ -76,21 +90,32 @@ export function Login() {
     });
   }, []);
 
+  useEffect(()=>{
+    if(loginState!==1) return;
+    let redirectPath;
+    if(location.state){
+      redirectPath = location.state.next;
+    } else {
+      redirectPath = "/";
+    }
+    navigate(redirectPath);
+  },[loginState]);
+
   const login = async (e) => {
     e.preventDefault();
+    var formdata = new FormData(e.target);
+    setUsername(formdata.get('username'));
     axios.post(
       "/jwt-auth/login/",
+      formdata,
       {
-        username,
-        password,
-      },
-      { withCredentials: true }
+        transformRequest: [csrfMiddleware]
+      }
     ).then((res)=>{
       console.log(res.data.message);
       dispatch(addUser(username));
       setLoginState(1);
     }).catch((error)=>{
-      console.log(error);
       setLoginState(-1);
     });
   };
@@ -111,7 +136,6 @@ export function Login() {
   if(loginState===-1) msgWidget=errorMsg;
   else if(loginState===1) msgWidget=successMsg;
 
-
   return (
     <div className="App">
       <TForm onSubmit={login}>
@@ -119,20 +143,12 @@ export function Login() {
         <div className="form-group">
           <label for="username">Username</label>
           <input type="text" className="form-control" id="username" name="username" placeholder="username" 
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
           />
         </div>
 
         <div className="form-group">
-          <label for="password">Username</label>
-          <input type="password" className="form-control" id="password" name="password" placeholder="password" 
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+          <label for="password">Password</label>
+          <input type="password" className="form-control" id="password" name="password" placeholder="password"
           />
         </div>
 

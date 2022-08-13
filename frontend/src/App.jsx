@@ -7,7 +7,7 @@ import React from 'react';
 
 import Issue, {IssueView, IssueCreateView} from './issue/issue.jsx';
 import Epic, {EpicView, EpicCreateUpdateView}  from './epic/epic.jsx';
-import Home, {Login, TicketeerNav} from './Home.jsx';
+import Home, {LoginRequired, Login, TicketeerNav} from './Home.jsx';
 
 import { useLocation, useNavigate, BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -49,6 +49,7 @@ function AppComponent(props) {
     </div>
   );
   return (<div>
+    {props.loginReq?<LoginRequired/>:<span className="LoginNotRequired"/>}
     <TicketeerNav></TicketeerNav>
     {elem}
   </div>);
@@ -74,12 +75,12 @@ function App() {
           </AppComponent>
         } />
         <Route path="issues/addIssue" element={
-          <AppComponent>
+          <AppComponent loginReq>
             <IssueCreateView />
           </AppComponent>
         } />
         <Route path="issues/:issueId/edit" element={
-          <AppComponent>
+          <AppComponent loginReq>
             <IssueCreateView />
           </AppComponent>
         } />
@@ -89,17 +90,17 @@ function App() {
           </AppComponent>
         } />
         <Route path="epics"  element={
-          <AppComponent>
+          <AppComponent loginReq>
             <Epic  />
           </AppComponent>
         } />
         <Route path="epics/addEpic" element={
-          <AppComponent>
+          <AppComponent loginReq>
             <EpicCreateUpdateView />
           </AppComponent>
         } />
         <Route path="epics/:epicId/edit" element={
-          <AppComponent>
+          <AppComponent loginReq>
             <EpicCreateUpdateView />
           </AppComponent>
         } />
@@ -109,7 +110,7 @@ function App() {
           </AppComponent>
         } />
         <Route path="epics/:epicId/addIssue" element={
-          <AppComponent>
+          <AppComponent loginReq>
             <IssueCreateView />
           </AppComponent>
         } />
