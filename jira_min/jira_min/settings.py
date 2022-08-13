@@ -55,12 +55,21 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'
-]
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:3001',
+#     "http://localhost:8000/",
+# ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8000",
+# ]
+
+# CSRF_ALLOWED_ORIGINS = [
+#     "http://localhost:8000/",
+# ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000/",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

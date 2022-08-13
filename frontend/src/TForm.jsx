@@ -1,5 +1,16 @@
 import React from 'react';
 
+import Cookies from 'js-cookie';
+
+export function csrfMiddleware(data, headers) {
+	headers['X-CSRFToken'] = Cookies.get('csrftoken');
+}
+
+export function isCsrfCookiePresent() {
+	const cookie = Cookies.get('csrftoken');
+	return (cookie!==undefined);
+}
+
 export default function TicketeerForm(props){
 	return (
 		<div>

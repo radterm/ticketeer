@@ -7,7 +7,7 @@ import {storeEpics} from './epicSlice.js';
 
 import Issue from '../issue/issue.jsx';
 
-import TForm from '../TForm.jsx';
+import TForm, {csrfMiddleware} from '../TForm.jsx';
 
 function EpicCard(props) {
   let navigate = useNavigate();
@@ -77,12 +77,13 @@ export function EpicCreateUpdateView(){
     setApiState("creating");
 
     const method = (epicParam===undefined?"post":"patch");
-    const url = (epicParam===undefined?"/epic/api/epics/":"/epic/api/epics/"+epicParam.id+"/");    
+    const url = (epicParam===undefined?"/epic/api/epics/":"/epic/api/epics/"+epicParam.id+"/");
 
     axios({
       method: method, 
       url: url , 
-      data: formdata
+      data: formdata,
+      transformRequest: [csrfMiddleware]
     }).then((response) => {
       console.log(response.data);
       dispatch(storeEpics([response.data]));

@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import {storeIssues, storeIssuesByEpic } from './issueSlice.js';
 
-import TForm from '../TForm.jsx';
+import TForm, {csrfMiddleware} from '../TForm.jsx';
 
 function IssueCard(props) {
 	let navigate = useNavigate();
@@ -121,12 +121,13 @@ export function IssueCreateView(){
     setApiState("creating");
 
     const method = (issueParam===undefined?"post":"patch");
-    const url = (issueParam===undefined?"/issue/api/issues/":"/issue/api/issues/"+issueParam.id+"/");    
+    const url = (issueParam===undefined?"/issue/api/issues/":"/issue/api/issues/"+issueParam.id+"/");
 
     axios({
       method: method, 
       url: url , 
-      data: formdata
+      data: formdata,
+      transformRequest: [csrfMiddleware]
     }).then((response) => {
       console.log(response.data);
       dispatch(storeIssues([response.data]));

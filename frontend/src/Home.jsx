@@ -16,7 +16,7 @@ import {
   NavbarText,
 } from 'reactstrap';
 
-import TForm from './TForm.jsx';
+import TForm, {csrfMiddleware, isCsrfCookiePresent} from './TForm.jsx';
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -30,17 +30,12 @@ export default function Login() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const getCsrfToken = () => {
-      try {
-        const res = axios.get("/jwt-auth/csrf/", {
-          withCredentials: true,
-        });
-        const csrfToken = res.headers.get("X-CSRFToken");
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getCsrfToken();
+    if(isCsrfCookiePresent){
+      return
+    }
+    axios.get("/jwt-auth/csrf/").catch((error)=>{
+      console.log(error);
+    });
   }, []);
 
   const login = async (e) => {
@@ -139,9 +134,11 @@ export function TicketeerNav() {
 
   const logout = (e)=>{
     e.preventDefault();
-    axios.get('/jwt-auth/logout/' ,{
+
+    axios.post('/jwt-auth/logout/' , {}, {
       // baseURL: 'http://localhost:8000',
-      responseType: 'json'
+      responseType: 'json',
+      transformRequest: [csrfMiddleware]
     }).then((response) => {
         dispatch(removeUser());
     }).catch((e)=>console.log(e));    

@@ -26,7 +26,7 @@ def login_view(request):
     else:
         return Response({'message': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def logout_view(request):

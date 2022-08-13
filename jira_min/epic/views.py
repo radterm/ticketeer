@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
+# from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import EpicSerializer
 from .models import Epic
@@ -14,7 +15,7 @@ def epics(request):
 # api views here.
 
 class EpicView(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = EpicSerializer
     queryset = Epic.objects.all()
 
