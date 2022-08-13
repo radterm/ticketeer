@@ -7,7 +7,7 @@ import React from 'react';
 
 import Issue, {IssueView, IssueCreateView} from './issue/issue.jsx';
 import Epic, {EpicView, EpicCreateUpdateView}  from './epic/epic.jsx';
-import Login, {TicketeerNav} from './Home.jsx';
+import Home, {Login, TicketeerNav} from './Home.jsx';
 
 import { useLocation, useNavigate, BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -60,7 +60,7 @@ function App() {
       <Routes>
         <Route path="" element={
           <AppComponent>
-            <div />
+            <Home />
           </AppComponent>
         } />
         <Route path="login" element={

@@ -18,7 +18,45 @@ import {
 
 import TForm, {csrfMiddleware, isCsrfCookiePresent} from './TForm.jsx';
 
-export default function Login() {
+export default function Home() {
+  return <div>
+    <div className="row">
+      <div className="col">
+        <div className="card my-4 mx-md-4 mx-1 text-center">
+          <div className="card-header">
+            Welcome to Ticketeer! Where innovation meets planning!
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="row">
+      <div className="col-md-6 ">
+        <div className="card my-4 mx-md-4 mx-1">
+          <div className="card-header">
+            Features
+          </div>
+          <ul className="list-group list-group-flush">
+            <li className="list-group-item">Track ideas and bugs under issues</li>
+            <li className="list-group-item">Estimate efforts for issues</li>
+            <li className="list-group-item">Group issues under epics for easier tracking</li>
+          </ul>
+        </div>
+      </div>
+      <div className="col-md-6 ">
+        <div className="card my-4 mx-md-4 mx-1">
+          <div className="card-body">
+            <blockquote className="blockquote mb-0">
+              <p>Planning is half the work.</p>
+              <footer className="blockquote-footer">Me in <cite title="Source Title">Right Now</cite></footer>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -58,13 +96,13 @@ export default function Login() {
   };
 
   const errorMsg = (
-    <div class="alert alert-danger" role="alert">
+    <div className="alert alert-danger" role="alert">
       Login Failed!
     </div>
   );
 
   const successMsg = (
-    <div class="alert alert-success" role="alert">
+    <div className="alert alert-success" role="alert">
       Welcome {username}!
     </div>
   );
