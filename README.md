@@ -106,5 +106,10 @@ All epics view. Has floating button to create epics.
 <br><br>
 <img src="https://user-images.githubusercontent.com/42782646/184549934-9648c499-de81-4d3e-a8ae-aa1c7c56d903.png" width="300">
 
+<br>
+All issues view. Has floating button to create issues.
+<br><br>
+<img src="https://user-images.githubusercontent.com/42782646/184551899-4dfd9e07-4903-4098-bb10-b23b0347492a.png" width="300">
+
   
 </details>
