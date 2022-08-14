@@ -7,7 +7,7 @@ import React from 'react';
 
 import Issue, {IssueView, IssueCreateView} from './issue/issue.jsx';
 import Epic, {EpicView, EpicCreateUpdateView}  from './epic/epic.jsx';
-import Home, {LoginRequired, Login, TicketeerNav} from './Home.jsx';
+import Home, {LoginRequired, Login, Signup, TicketeerNav} from './Home.jsx';
 
 import { useLocation, useNavigate, BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -67,6 +67,11 @@ function App() {
         <Route path="login" element={
           <AppComponent>
             <Login />
+          </AppComponent>
+        } />
+        <Route path="signup" element={
+          <AppComponent>
+            <Signup />
           </AppComponent>
         } />
         <Route path="issues" element={

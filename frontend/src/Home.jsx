@@ -68,14 +68,17 @@ export function LoginRequired(){
   return <span className="LoginRequired" />;
 };
 
-export function Login() {
-  const [username, setUsername] = useState("");
+export function Auth(props) {
+  // const [username, setUsername] = useState("");
   // const [password, setPassword] = useState("");
 
   // 0 -> Nothing
   // -1 -> show error msg
   // 1 -> success!
-  const [loginState, setLoginState] = useState(0);
+  const [authState, setAuthState] = useState(0);
+  const username = useSelector((state) => {
+    return state.user.value;
+  });
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -91,7 +94,7 @@ export function Login() {
   }, []);
 
   useEffect(()=>{
-    if(loginState!==1) return;
+    if(authState!==1) return;
     let redirectPath;
     if(location.state){
       redirectPath = location.state.next;
@@ -99,36 +102,39 @@ export function Login() {
       redirectPath = "/";
     }
     navigate(redirectPath);
-  },[loginState]);
+  },[authState]);
 
-  const login = async (e) => {
+  const auth = async (e) => {
     e.preventDefault();
     var formdata = new FormData(e.target);
     const username = formdata.get('username');
     const password = formdata.get('password');
-    setUsername(formdata.get('username'));
+    // only for use when promise resolves
+    // setUsername(formdata.get('username'));
+    
+    const reqConfig = {
+      transformRequest: [csrfMiddleware]
+    };
+    if(!props.signup) reqConfig['auth'] = {
+      username: username,
+      password: password
+    };
     axios.post(
-      "/jwt-auth/login/",
-      {},
-      {
-        transformRequest: [csrfMiddleware],
-        auth: {
-          username: username,
-          password: password
-        }
-      }
+      "/jwt-auth/"+ (props.signup?"signup":"login") +"/",
+      formdata,
+      reqConfig
     ).then((res)=>{
       console.log(res.data.message);
-      dispatch(addUser(username));
-      setLoginState(1);
+      dispatch(addUser(res.data.username));
+      setAuthState(1);
     }).catch((error)=>{
-      setLoginState(-1);
+      setAuthState(-1);
     });
   };
 
   const errorMsg = (
     <div className="alert alert-danger" role="alert">
-      Login Failed!
+      Auth Failed!
     </div>
   );
 
@@ -139,12 +145,12 @@ export function Login() {
   );
 
   var msgWidget = <span/>;
-  if(loginState===-1) msgWidget=errorMsg;
-  else if(loginState===1) msgWidget=successMsg;
+  if(authState===-1) msgWidget=errorMsg;
+  else if(authState===1) msgWidget=successMsg;
 
   return (
     <div className="App">
-      <TForm onSubmit={login}>
+      <TForm onSubmit={auth}>
 
         <div className="form-group">
           <label for="username">Username</label>
@@ -158,13 +164,21 @@ export function Login() {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">Login</button>
+        <button type="submit" className="btn btn-primary">Auth</button>
         <div className="pt-2">{msgWidget}</div>
 
       </TForm>
     </div>
   );
 };
+
+export function Login() {
+  return <Auth />;
+}
+
+export function Signup() {
+  return <Auth signup/>;
+}
 
 export function TicketeerNav() {
   const [user, unauthenticated] = useSelector((state) => {
@@ -215,7 +229,15 @@ export function TicketeerNav() {
   const logInWidget = (
     <NavItem>
       <NavLink href="/login">
-        Login or SignUp
+        Login
+      </NavLink>
+    </NavItem>
+  );
+
+  const signUpWidget = (
+    <NavItem>
+      <NavLink href="/signup">
+        SignUp
       </NavLink>
     </NavItem>
   );
@@ -239,6 +261,7 @@ export function TicketeerNav() {
           </NavLink>
         </NavItem>
         {unauthenticated ? logInWidget : logOutWidget}
+        {unauthenticated ? signUpWidget : null}
       </Nav>
     </Collapse>
   );
