@@ -36,7 +36,9 @@ function PathHeader(){
       {pathNames[pathNames.length-1]}
     </button>
   );
-  return(<div>{paths}</div>);
+  return(<div className="p-2">
+    {paths}
+  </div>);
 }
 
 function AppComponent(props) {

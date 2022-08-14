@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.floating-button {
+  position: fixed;
+  bottom: 10vh;
+  border-radius: 50%;
+  right: 13vw;
+  text-align: center;
+  font-size: 23px;
+  z-index: 100;
+}

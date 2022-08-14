@@ -4,6 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
 import {storeIssues, storeIssuesByEpic } from './issueSlice.js';
 
 import TForm, {csrfMiddleware} from '../TForm.jsx';
@@ -221,6 +225,7 @@ export default function Issue(props) {
     return entries;
   });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(
     ()=>{
@@ -254,6 +259,12 @@ export default function Issue(props) {
   return (
     <div>
       {issueListContent}
+      <button className="btn btn-primary floating-button" onClick={(e)=>{
+        const createUrl = props.epic===undefined ? '/issues/addIssue': '/epics/'+ props.epic +'/addIssue';
+        navigate(createUrl);
+      }}>
+        <FontAwesomeIcon icon={faPlus} />
+      </button>
     </div>
     
   );

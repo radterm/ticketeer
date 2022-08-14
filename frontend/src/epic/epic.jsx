@@ -3,6 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
 import {storeEpics} from './epicSlice.js';
 
 import Issue from '../issue/issue.jsx';
@@ -204,6 +207,7 @@ export default function Epic() {
   console.log(epics);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(
     ()=>{
@@ -232,6 +236,9 @@ export default function Epic() {
   return (
     <div>
       {epicListContent}
+      <button className="btn btn-primary floating-button" onClick={(e)=>navigate("/epics/addEpic")}>
+        <FontAwesomeIcon icon={faPlus} />
+      </button>
     </div>
   );
 }
