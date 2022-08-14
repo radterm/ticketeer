@@ -15,16 +15,11 @@ def get_csrf_token(request):
     return response
 
 @api_view(['POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def login_view(request):
-    username = request.data['username']
-    password = request.data['password']
-    user = authenticate(username=username, password=password)
-    if user:
-        print(user)
-        login(request, user)
-        return Response({'message': 'User logged in'}, status=status.HTTP_200_OK)
-    else:
-        return Response({'message': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+    login(request, request.user)
+    return Response({'message': 'User logged in'}, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication])

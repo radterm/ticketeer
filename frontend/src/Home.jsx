@@ -104,12 +104,18 @@ export function Login() {
   const login = async (e) => {
     e.preventDefault();
     var formdata = new FormData(e.target);
+    const username = formdata.get('username');
+    const password = formdata.get('password');
     setUsername(formdata.get('username'));
     axios.post(
       "/jwt-auth/login/",
-      formdata,
+      {},
       {
-        transformRequest: [csrfMiddleware]
+        transformRequest: [csrfMiddleware],
+        auth: {
+          username: username,
+          password: password
+        }
       }
     ).then((res)=>{
       console.log(res.data.message);
