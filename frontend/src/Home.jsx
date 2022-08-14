@@ -148,9 +148,25 @@ export function Auth(props) {
   if(authState===-1) msgWidget=errorMsg;
   else if(authState===1) msgWidget=successMsg;
 
+  const excessWidget = (
+    <div className="card my-4 mx-sm-4 mx-1">
+      <div className="card-body">
+        <p class="card-text">
+          {!props.signup?"Do not have an account? Sign up for a new account now!":"Already have an account? Login now!"}
+        </p>
+        <button class="btn btn-primary" onClick={(e)=>{
+            const redirectPath = location.state ? location.state.next : "/";
+            navigate(!props.signup?"/signup":"/login", {state: {next: redirectPath}});
+          }}>
+          {!props.signup?"Sign Up":"Login"}
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="App">
-      <TForm onSubmit={auth}>
+      <TForm onSubmit={auth} excessWidget={excessWidget}>
 
         <div className="form-group">
           <label for="username">Username</label>
@@ -164,7 +180,7 @@ export function Auth(props) {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">Auth</button>
+        <button type="submit" className="btn btn-primary">{props.signup?"Sign Up":"Login"}</button>
         <div className="pt-2">{msgWidget}</div>
 
       </TForm>
@@ -185,6 +201,7 @@ export function TicketeerNav() {
     return [state.user.value, state.user.unauthenticated];
   });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(()=>{
     if(user!==null || unauthenticated){
@@ -215,6 +232,7 @@ export function TicketeerNav() {
       transformRequest: [csrfMiddleware]
     }).then((response) => {
         dispatch(removeUser());
+        navigate("/");
     }).catch((e)=>console.log(e));    
   };
 

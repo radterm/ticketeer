@@ -25,6 +25,7 @@ export default function TicketeerForm(props){
 					    </form>
 					  </div>
 					</div>
+					{props.excessWidget}
 				</div>
 				<div className="col-md-2" />
 			</div>
